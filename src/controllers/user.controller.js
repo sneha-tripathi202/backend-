@@ -2,6 +2,10 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import dotenv from "dotenv";
+dotenv.config({
+    path:'./.env'
+})
 
 const generateToken=(id)=>{
 return jwt.sign({id},process.env.JWT_SECRET,{expiresIn:"1d"})
@@ -16,7 +20,7 @@ const registerUser=async(req,res)=>{
                 message:"All fields are required"
             })
         }
-        const existEmail=await User.findOne(email)
+        const existEmail=await User.findOne({email})
         if(existEmail){
             return res.status(400).json({
                 success:false,
