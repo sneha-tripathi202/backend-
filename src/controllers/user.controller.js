@@ -53,3 +53,38 @@ const registerUser=async(req,res)=>{
         })
     }
 }
+
+const loginUser=async (req,res)=>{
+    const {email,password}=req.body;
+    try{
+        if(!email||!password){
+            return res.status(400).json({
+                success:false,
+                message:"All fields are required"
+            })
+        }
+        const user=await User.findOne({email})
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid email or password"
+            })
+        }
+        const isMatch=await bcrypt.compare(password,user.password)
+        if(!isMatch){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid email or password"
+            })
+        }
+    }
+    catch(error){
+        console.log("Error in user login",error);
+        res.status(500).json({
+            success:false,
+            message:"Error in user login",
+            error:error.message
+        })
+    }
+}
+export {registerUser,loginUser};
